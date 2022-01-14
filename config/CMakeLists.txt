@@ -1,0 +1,5 @@
+project(config)
+add_subdirectory(src/etherkitten/config)
+if(BUILD_TESTING)
+    add_subdirectory(test)
+endif()

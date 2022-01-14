@@ -1,0 +1,82 @@
+image: registry.gitlab.com/h2t/student-projects/pse-ws2021/etherkitten
+
+include:
+    - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
+
+stages:
+    - build
+    - test
+
+build-etherkitten:
+    stage: build
+    script:
+        - echo "Building EtherKITten..."
+        - mkdir build
+        - cd build
+        - cmake ..
+        - make all -j 32
+    # all following stages will have access to the build directory
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/
+
+reader-test:
+    stage: test
+    script:
+        - echo "This job runs the tests for reader that do not require a bus"
+        - export GCOV_PREFIX=$CI_PROJECT_DIR/build/reader_coverage
+        - cd build/bin
+        - ./reader_test
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/reader_coverage
+          
+datatypes-test:
+    stage: test
+    script:
+        - echo "This job runs the tests for datatypes"
+        - export GCOV_PREFIX=$CI_PROJECT_DIR/build/datatypes_coverage
+        - cd build/bin
+        - ./datatypes_test
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/datatypes_coverage
+
+config-test:
+    stage: test
+    script:
+        - echo "This job runs the tests for config"
+        - export GCOV_PREFIX=$CI_PROJECT_DIR/build/config_coverage
+        - cd build/bin
+        - ./config_test
+    artifacts:
+        expire_in: 1 day
+        paths:
+            - build/config_coverage
+
+coverage-report:
+    stage: .post
+    script:
+        - gcov-tool-8 merge build/reader_coverage build/datatypes_coverage -o build/coverage_tmp_1
+        - gcov-tool-8 merge build/config_coverage build/coverage_tmp_1 -o build/coverage_combined
+        - find ./build -name '*.gcno' -not -path "./build/coverage_combined/*" -exec cp --parents \{\} $CI_PROJECT_DIR/build/coverage_combined$CI_PROJECT_DIR \;
+        - mkdir coverage
+        - cd coverage
+        # generate HTML report for humans and summary for GitLab
+        - python -m gcovr --gcov-executable gcov-8 -r .. --object-directory $CI_PROJECT_DIR/build/coverage_combined/$CI_PROJECT_DIR -f ".*/src/etherkitten/.*\.[ch]pp" -e ".*/qcustomplot\.[ch]pp" -e ".*/json\.[ch]pp" -e ".*/BusReader.*\.[ch]pp" -e ".*/BusSlaveInformant.*\.[ch]pp" -e ".*/EtherKitten.*\.[ch]pp" --exclude-directories ".*_autogen" --exclude-directories ".*mocks" --exclude-directories ".*gui" --exclude-directories ".*controller" --exclude-unreachable-branches --exclude-throw-branches --html-details index.html --html-title "EtherKitten Code Coverage" -s
+    artifacts:
+        name: coverage
+        paths:
+            - coverage/
+
+generate-documentation:
+    stage: .post
+    script:
+        - doxygen
+    artifacts:
+        name: documentation
+        paths:
+            - build/docs/

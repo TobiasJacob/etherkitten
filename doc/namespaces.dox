@@ -1,0 +1,66 @@
+/*!
+ * \namespace etherkitten
+ * \brief The embedding namespace for all members of EtherKitten.
+ */
+
+/*!
+ * \namespace etherkitten::datatypes
+ * \brief Defines fundamental data types that are used in all the other parts of the application.
+ *
+ * EtherKITten is put together so that none of its larger components depend on each other;
+ * instead, they depend on the datatypes package / namespace to provide the common interface
+ * and use the controller to connect to the other components.
+ *
+ * Thus, datatypes also contains several interfaces for classes that are implemented in
+ * other components, allowing these implementations to stand separate.
+ */
+
+/*!
+ * \namespace etherkitten::reader
+ * \brief Defines the main library for interacting with EtherCAT buses and writing and reading logs.
+ *
+ * The reader package / namespace is the library you want to use to write your own EtherCAT-interfacing application.
+ * The only class you should instantiate is EtherKitten - from there, use its methods to
+ * - Connect an EtherCAT bus on an interface or socket
+ * - Start a log while reading data from a bus or log
+ * - Open a previously written log
+ * - Interact with an EtherCAT bus by sending read or write requests.
+ */
+
+/*!
+ * \namespace etherkitten::controller
+ * \brief Connects the other components to form the EtherKITten graphical application.
+ *
+ * The controller contains the entrypoint for the application as well as interfaces for the frontend
+ * to access functionality and information that the backend (etherkitten::reader, etherkitten::config) supplies.
+ *
+ * Additionally, the command line interface is managed in this namespace.
+ */
+
+/*!
+ * \namespace etherkitten::mocks
+ * \brief Makes running EtherKITten without a bus or log possible.
+ *
+ * Contains mocked implementations of internal etherkitten::reader interfaces that may
+ * be used to test higher hierarchy levels.
+ * 
+ * These mocks may be unstable and possibly incompatible with other functionality. They just
+ * serve as a baseline and only barely enable other logic in e.g. etherkitten::reader or etherkitten::gui
+ * to be tested without a live bus or log.
+ */
+
+/*!
+ * \namespace etherkitten::gui
+ * \brief Contains the GUI components of EtherKITten.
+ *
+ * The GUI is designed to be independent of the backend and thus only depends directly
+ * on etherkitten::datatypes, while all data from the backend is obtained through
+ * adapters given to it by the controller.
+ */
+
+/*!
+ * \namespace etherkitten::config
+ * \brief Loads and stores configurations for the EtherKITten graphical application.
+ *
+ * Loads and stores various details about previously connected buses such as how the topology should be layed out visually.
+ */
