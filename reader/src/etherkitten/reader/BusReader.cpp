@@ -15,7 +15,6 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 #include "BusReader.hpp"
 
 extern "C"
@@ -34,7 +33,7 @@ namespace etherkitten::reader
 	BusReader::BusReader(BusSlaveInformant& slaveInformant, BusQueues& queues,
 	    std::unordered_map<datatypes::RegisterEnum, bool>& registers)
 	    : SearchListReader(getSlaveConfiguredAddresses(), slaveInformant.getBusInfo().ioMapUsedSize,
-	          datatypes::now())
+			datatypes::now())
 	    , slaveInformant(slaveInformant)
 	    , busInfo(slaveInformant.getBusInfo())
 	    , registerScheduler(slaveConfiguredAddresses, registers)
@@ -130,7 +129,7 @@ namespace etherkitten::reader
 		{
 			lastLoopStart = datatypes::now();
 
-			static const int timeoutus = 100;
+			static const int timeoutus = 500;
 			if (ec_send_processdata() <= 0)
 			{
 				queues.postError(
