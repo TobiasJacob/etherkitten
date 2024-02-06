@@ -1,3 +1,6 @@
+> [!NOTE]
+> This is a fork of https://git.h2t.iar.kit.edu/sw/etherkitten from H2T, which enables a standalone build based on Docker, not on axii. Mostly because there might be some people who want to use this but do not want to install a global package manager.
+
 <h1 align="center">EtherKITten</h1>
 
 ![EtherKITten Logo](doc/EtherKITten_logo_large.png)
@@ -24,8 +27,7 @@ Overall, EtherKITten offers a comprehensive set of tools to support developers a
 # Project Structure
 The project is split into several modules that are compiled separately. Each module has its own `src/` and `test/` folders. The `src/` folders contain the source code and headers for that module, while the `test/` folders contain unit tests for the testing framework Catch2. The top-level `test/` folder contains the main function that is used for all tests to save on compilation time.
 
-# Prerequisites
-## Recommended: Build using Docker
+# Recommended: Build using Docker
 
 First setup docker
 
@@ -103,6 +105,11 @@ Then etherkitten is executable under Ubuntu 22.04.
 ```console
 build/bin/etherkitten
 ```
+
+
+# Legacy build instructions
+
+<details>
 
 ## Target System
 
@@ -212,6 +219,9 @@ cd build
 cmake -DBUILD_TESTING=ON ..
 make
 ```
+
+</details>
+
 # Description of the GUI
 
 ## Menu Items
