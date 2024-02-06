@@ -25,6 +25,84 @@ Overall, EtherKITten offers a comprehensive set of tools to support developers a
 The project is split into several modules that are compiled separately. Each module has its own `src/` and `test/` folders. The `src/` folders contain the source code and headers for that module, while the `test/` folders contain unit tests for the testing framework Catch2. The top-level `test/` folder contains the main function that is used for all tests to save on compilation time.
 
 # Prerequisites
+## Recommended: Build using Docker
+
+First setup docker
+
+1. [Install docker](https://docs.docker.com/engine/install/ubuntu/)
+1. [Post installation steps](https://docs.docker.com/engine/install/linux-postinstall/)
+
+Then execute
+
+```
+docker build -t etherkittendev .
+docker run --rm -it -v $(pwd):/workdir etherkittendev /bin/bash
+```
+
+Now you're inside the virtual machine you use to build docker. Your files are mounted in `/workdir`.
+
+```
+cd workdir
+mkdir build
+cd build
+cmake -DBUILD_TESTING=OFF -DSTANDALONE=ON ..
+make -j 16
+```
+
+This will create a standalone library that only depends on standard libraries and Qt5. The qt libraries can be installed `qtbase5-dev`. Make sure to install qt5 on your host system (not inside docker container).
+
+```console
+sudo apt install qtbase5-dev
+```
+
+
+<details>
+```
+tobi@tobi-Z590-VISION-G:~/git/etherkitten$ ldd build/bin/etherkitten 
+        linux-vdso.so.1 (0x00007fffc30cc000)
+        libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f52a2032000)
+        libQt5PrintSupport.so.5 => /lib/x86_64-linux-gnu/libQt5PrintSupport.so.5 (0x00007f52a1fba000)
+        libQt5Widgets.so.5 => /lib/x86_64-linux-gnu/libQt5Widgets.so.5 (0x00007f52a0d3f000)
+        libQt5Gui.so.5 => /lib/x86_64-linux-gnu/libQt5Gui.so.5 (0x00007f52a0661000)
+        libQt5Core.so.5 => /lib/x86_64-linux-gnu/libQt5Core.so.5 (0x00007f52a0102000)
+        libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f529fed8000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f52a1ed1000)
+        libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f52a1eb1000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f529fcb0000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f52a204c000)
+        libGL.so.1 => /lib/x86_64-linux-gnu/libGL.so.1 (0x00007f529fc29000)
+        libpng16.so.16 => /lib/x86_64-linux-gnu/libpng16.so.16 (0x00007f529fbee000)
+        libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f529fbd2000)
+        libharfbuzz.so.0 => /lib/x86_64-linux-gnu/libharfbuzz.so.0 (0x00007f529fb03000)
+        libmd4c.so.0 => /lib/x86_64-linux-gnu/libmd4c.so.0 (0x00007f529faf1000)
+        libdouble-conversion.so.3 => /lib/x86_64-linux-gnu/libdouble-conversion.so.3 (0x00007f529fadc000)
+        libicui18n.so.70 => /lib/x86_64-linux-gnu/libicui18n.so.70 (0x00007f529f7ad000)
+        libicuuc.so.70 => /lib/x86_64-linux-gnu/libicuuc.so.70 (0x00007f529f5b2000)
+        libpcre2-16.so.0 => /lib/x86_64-linux-gnu/libpcre2-16.so.0 (0x00007f529f528000)
+        libzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f529f459000)
+        libglib-2.0.so.0 => /lib/x86_64-linux-gnu/libglib-2.0.so.0 (0x00007f529f31f000)
+        libGLdispatch.so.0 => /lib/x86_64-linux-gnu/libGLdispatch.so.0 (0x00007f529f267000)
+        libGLX.so.0 => /lib/x86_64-linux-gnu/libGLX.so.0 (0x00007f529f233000)
+        libfreetype.so.6 => /lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007f529f16b000)
+        libgraphite2.so.3 => /lib/x86_64-linux-gnu/libgraphite2.so.3 (0x00007f529f144000)
+        libicudata.so.70 => /lib/x86_64-linux-gnu/libicudata.so.70 (0x00007f529d526000)
+        libpcre.so.3 => /lib/x86_64-linux-gnu/libpcre.so.3 (0x00007f529d4b0000)
+        libX11.so.6 => /lib/x86_64-linux-gnu/libX11.so.6 (0x00007f529d370000)
+        libbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x00007f529d360000)
+        libxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x00007f529d336000)
+        libbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x00007f529d313000)
+        libXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x00007f529d30d000)
+        libXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x00007f529d305000)
+        libbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x00007f529d2eb000)
+        libmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x00007f529d2de000)
+```
+</details>
+
+Then etherkitten is executable under Ubuntu 22.04.
+
+```console
+build/bin/etherkitten
+```
 
 ## Target System
 

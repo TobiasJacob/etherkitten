@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 
 project(EtherKITten)
 
+option(STANDALONE "Generates a standalone executable" OFF)
+
+if(STANDALONE)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    set(BUILD_SHARED_LIBS OFF)
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
