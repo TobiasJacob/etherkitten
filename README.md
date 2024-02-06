@@ -36,7 +36,7 @@ First setup docker
 
 Then execute
 
-```
+```console
 docker build -t etherkittendev .
 docker run --rm -it -v $(pwd):/workdir etherkittendev /bin/bash
 ```
@@ -51,7 +51,9 @@ cmake -DBUILD_TESTING=OFF -DSTANDALONE=ON ..
 make -j 16
 ```
 
-This will create a standalone library that only depends on standard libraries and Qt5. The qt libraries can be installed `qtbase5-dev`. Make sure to install qt5 on your host system (not inside docker container).
+This will create a standalone executable that only depends on standard libraries and Qt5.
+
+Exit the docker container. Back on your host, the qt libraries can be installed `qtbase5-dev`. Make sure to install qt5 on your host system (not inside docker container).
 
 ```console
 sudo apt install qtbase5-dev
@@ -102,10 +104,18 @@ tobi@tobi-Z590-VISION-G:~/git/etherkitten$ ldd build/bin/etherkitten
 
 Then etherkitten is executable under Ubuntu 22.04.
 
+Ethercat requires the ability to send RAW Ethernet frames. This requires root privileges. You can either run etherkitten as root or set the capabilities for the binary.
+
 ```console
+sudo setcap cap_net_raw,cap_ipc_lock,cap_sys_nice+ep build/bin/etherkitten
 build/bin/etherkitten
 ```
 
+or
+
+```console
+sudo build/bin/etherkitten
+```
 
 # Legacy build instructions
 
